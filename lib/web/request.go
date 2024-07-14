@@ -1,0 +1,44 @@
+package web
+
+import (
+	"calendly/lib/validator"
+	"encoding/json"
+	"net/http"
+)
+
+type Request struct {
+	*http.Request
+
+	pathParams map[string]string
+}
+
+type Handle func(request *Request) (*JSONResponse, ErrorInterface)
+
+func NewRequest(r *http.Request) Request {
+	return Request{
+		Request: r.WithContext(SetRequestID(r.Context(), GetRequestIDFromRequestHeader(r))),
+	}
+}
+
+func (req *Request) SetPathParam(key, value string) {
+	req.pathParams[key] = value
+}
+
+func (r *Request) QueryParam(key string) string {
+	return r.URL.Query().Get(key)
+}
+
+func (req *Request) PathParams() map[string]string {
+	return req.pathParams
+}
+
+func (req *Request) ValidateBodyToStruct(s any) error {
+	defer req.Body.Close()
+
+	err := json.NewDecoder(req.Body).Decode(&s)
+	if err != nil {
+		return validator.HandleValidationErrors(err)
+	}
+
+	return validator.ValidateStruct(s)
+}
