@@ -14,6 +14,8 @@ type User struct {
 
 	FirstName, LastName  string
 	CreatedAt, UpdatedAt *time.Time
+
+	Availabilities []*UserAvailability
 }
 
 func (user *User) BeforeCreate(_ *gorm.DB) (err error) {

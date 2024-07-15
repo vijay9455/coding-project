@@ -15,7 +15,7 @@ import (
 type ApiVersion string
 
 const (
-	V1 ApiVersion = "v1"
+	V1 ApiVersion = "1.0.0"
 )
 
 func ServeEndpoint(apiVersion ApiVersion, nextHandler web.Handle) httprouter.Handle {

@@ -51,7 +51,7 @@ func startServer(handler http.Handler) {
 	}()
 
 	<-done
-	logger.Info(context.TODO(), "server shutting down", nil)
+	logger.Info(context.TODO(), "initiated server shutdown", nil)
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -59,4 +59,5 @@ func startServer(handler http.Handler) {
 		logger.Error(context.TODO(), "error while shutting down server", map[string]any{"error": err})
 		os.Exit(1)
 	}
+	logger.Info(context.TODO(), "server successfully shutdown", nil)
 }
