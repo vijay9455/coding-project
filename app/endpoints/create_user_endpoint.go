@@ -30,14 +30,18 @@ func CreateUser(request *web.Request) (*web.JSONResponse, web.ErrorInterface) {
 		return nil, web.ErrInternalServerError(err.Error())
 	}
 
-	response := web.JSONResponse(map[string]any{
+	response := web.JSONResponse(buildUser(request.Context(), user, user.Availabilities))
+	return &response, nil
+}
+
+func buildUser(ctx context.Context, user *models.User, availabilities []*models.UserAvailability) map[string]any {
+	return map[string]any{
 		"user": map[string]any{
 			"id":             user.ID,
 			"email":          user.Email,
-			"availabilities": buildAvailabilities(request.Context(), user.Availabilities),
+			"availabilities": buildAvailabilities(ctx, availabilities),
 		},
-	})
-	return &response, nil
+	}
 }
 
 func buildAvailabilities(_ context.Context, availabilities []*models.UserAvailability) []map[string]any {

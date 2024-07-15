@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS user_availabilities (
-  id character varying NOT NULL,
+  id character varying NOT NULL PRIMARY KEY,
   user_id character varying NOT NULL,
   day_of_week integer NOT NULL,
-  start_time TIME with time zone NOT NULL,
-  end_time TIME with time zone NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
   created_at timestamp with time zone,
   updated_at timestamp with time zone
 );

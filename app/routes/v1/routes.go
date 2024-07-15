@@ -9,4 +9,5 @@ import (
 
 func Init(router *httprouter.Router) {
 	router.POST("/api/v1/users", middleware.ServeEndpoint(middleware.V1, endpoints.CreateUser))
+	router.GET("/api/v1/my_profile", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.MyProfile)))
 }

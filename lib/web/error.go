@@ -34,3 +34,7 @@ var ErrInternalServerError = func(description string) ErrorInterface {
 var ErrValidationFailed = func(desc string) ErrorInterface {
 	return &Error{"bad_request", desc, http.StatusBadRequest}
 }
+
+var ErrUnauthorised = func(desc string) ErrorInterface {
+	return &Error{"unauthorized", desc, http.StatusUnauthorized}
+}

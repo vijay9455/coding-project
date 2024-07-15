@@ -2,6 +2,7 @@ package web
 
 import (
 	"calendly/lib/validator"
+	"context"
 	"encoding/json"
 	"net/http"
 )
@@ -18,6 +19,18 @@ func NewRequest(r *http.Request) Request {
 	return Request{
 		Request: r.WithContext(SetRequestID(r.Context(), GetRequestIDFromRequestHeader(r))),
 	}
+}
+
+func (req *Request) WithContext(ctx context.Context) *Request {
+	if ctx == nil {
+		panic("nil context")
+	}
+	newHttpRequest := req.Request.WithContext(ctx)
+	newReq := new(Request)
+	*newReq = *req
+	newReq.Request = newHttpRequest
+
+	return newReq
 }
 
 func (req *Request) SetPathParam(key, value string) {

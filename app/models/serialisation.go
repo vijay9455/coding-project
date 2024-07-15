@@ -20,14 +20,14 @@ func (t *TimeOnly) Scan(value interface{}) error {
 		*t = TimeOnly{v}
 		return nil
 	case []byte:
-		parsedTime, err := time.Parse("15:04:05-07:00", string(v))
+		parsedTime, err := time.Parse("15:04:05", string(v))
 		if err != nil {
 			return err
 		}
 		*t = TimeOnly{parsedTime}
 		return nil
 	case string:
-		parsedTime, err := time.Parse("15:04:05-07:00", v)
+		parsedTime, err := time.Parse("15:04:05", v)
 		if err != nil {
 			return err
 		}
@@ -40,12 +40,12 @@ func (t *TimeOnly) Scan(value interface{}) error {
 
 // Value implements the driver.Valuer interface for TimeOnly
 func (t TimeOnly) Value() (driver.Value, error) {
-	return t.Format("15:04:05-07:00"), nil
+	return t.Format("15:04:05"), nil
 }
 
 func (t *TimeOnly) UnmarshalJSON(b []byte) error {
 	str := string(b)
-	parsedTime, err := time.Parse(`"15:04:05-07:00"`, str)
+	parsedTime, err := time.Parse(`"15:04:05"`, str)
 	if err != nil {
 		return err
 	}
@@ -55,5 +55,5 @@ func (t *TimeOnly) UnmarshalJSON(b []byte) error {
 
 // MarshalJSON customizes the JSON marshalling for TimeOnly
 func (t TimeOnly) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%s"`, t.Format("15:04:05-07:00"))), nil
+	return []byte(fmt.Sprintf(`"%s"`, t.Format("15:04:05"))), nil
 }

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-  id character varying NOT NULL,
+  id character varying NOT NULL PRIMARY KEY,
   email character varying NOT NULL,
   first_name character varying NOT NULL,
   last_name character varying NOT NULL,
