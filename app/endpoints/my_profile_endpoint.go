@@ -10,7 +10,6 @@ import (
 
 func MyProfile(request *web.Request) (*web.JSONResponse, web.ErrorInterface) {
 	currentUser := middleware.GetCurrentUser(request.Context())
-
 	if currentUser == nil {
 		logger.Error(request.Context(), "should not have reached here. current_user missing in authenticated endpoint", nil)
 		return nil, web.ErrInternalServerError("something went wrong")
