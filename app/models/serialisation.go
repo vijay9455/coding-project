@@ -50,7 +50,7 @@ func (t TimeOnly) Value() (driver.Value, error) {
 
 func (t *TimeOnly) UnmarshalJSON(b []byte) error {
 	str := string(b)
-	parsedTime, err := time.Parse(TimeOnlyFormat, str)
+	parsedTime, err := time.Parse(fmt.Sprintf(`"%s"`, TimeOnlyFormat), str)
 	if err != nil {
 		return err
 	}
