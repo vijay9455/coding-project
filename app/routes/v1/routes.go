@@ -12,5 +12,6 @@ func Init(router *httprouter.Router) {
 	router.GET("/api/v1/my_profile", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.MyProfile)))
 	router.PUT("/api/v1/users/availabilities", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.UpdateAvailability)))
 	router.GET("/api/v1/available_slots", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.AvailableSlots)))
-	router.GET("/api/v1/users/overlapping_slots", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.OverlappingSlots)))
+	router.GET("/api/v1/overlapping_slots", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.OverlappingSlots)))
+	router.POST("/api/v1/meetings", middleware.ServeEndpoint(middleware.V1, middleware.AuthenticateUser(endpoints.CreateMeeting)))
 }

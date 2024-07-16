@@ -8,6 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
+type AcceptStatusType string
+
+const (
+	Accepted AcceptStatusType = "ACCEPTED"
+	Rejected AcceptStatusType = "REJECTED"
+	MAY_BE   AcceptStatusType = "MAY_BE"
+)
+
 type Meeting struct {
 	ID string `gorm:"primaryKey"`
 
@@ -23,8 +31,8 @@ type MeetingParticipant struct {
 	ID string `gorm:"primaryKey"`
 
 	MeetingID    *string
-	UserID       *string
-	AcceptStatus *string
+	UserID       string
+	AcceptStatus AcceptStatusType
 
 	CreatedAt, UpdatedAt *time.Time
 }

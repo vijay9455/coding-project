@@ -8,7 +8,6 @@ import (
 	"calendly/lib/logger"
 	"calendly/lib/web"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -29,7 +28,7 @@ func OverlappingSlots(request *web.Request) (*web.JSONResponse, web.ErrorInterfa
 	otherUser, err := repository.NewUserRepository().GetByEmail(request.Context(), db.Get(), *params.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, web.ErrValidationFailed(fmt.Sprintf("unable to find user with given email"))
+			return nil, web.ErrValidationFailed("unable to find user with given email")
 		}
 		return nil, web.ErrInternalServerError("something went wrong")
 	}

@@ -10,6 +10,7 @@ import (
 
 type MeetingRepositoryInterface interface {
 	GetForUser(ctx context.Context, db *gorm.DB, userID string, startTime, endTime time.Time) ([]*models.Meeting, error)
+	Create(ctx context.Context, db *gorm.DB, meeting *models.Meeting) error
 }
 
 func NewMeetingRepository() MeetingRepositoryInterface {
@@ -20,7 +21,7 @@ type meetingRepository struct{}
 
 func (repo *meetingRepository) GetForUser(ctx context.Context, db *gorm.DB, userID string, startTime, endTime time.Time) ([]*models.Meeting, error) {
 	var meetings []*models.Meeting
-	err := db.Table("meetings").Joins("inner join meeting_participants on meeting_participants.meeting_id = meetings.id").
+	err := db.WithContext(ctx).Table("meetings").Joins("inner join meeting_participants on meeting_participants.meeting_id = meetings.id").
 		Where("meetings.end_time >= ? or meetings.start_time <= ?", startTime, endTime).Where("meeting_participants.user_id = ?", userID).
 		Order("start_time, end_time asc").
 		Find(&meetings).Error
@@ -29,4 +30,8 @@ func (repo *meetingRepository) GetForUser(ctx context.Context, db *gorm.DB, user
 	}
 
 	return meetings, nil
+}
+
+func (repo *meetingRepository) Create(ctx context.Context, db *gorm.DB, meeting *models.Meeting) error {
+	return db.WithContext(ctx).Create(meeting).Error
 }
