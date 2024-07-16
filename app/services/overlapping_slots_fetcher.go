@@ -42,7 +42,7 @@ func (svc *overlappingSlotFetcherSvc) Fetch(ctx context.Context, userA, userB *m
 	return svc.fetchOverlappingSlots(ctx, userASlotDetail[0].Slots, userBSlotDetail[0].Slots), nil
 }
 
-func (svc *overlappingSlotFetcherSvc) fetchOverlappingSlots(ctx context.Context, userASlots, userBSlots []*slot) []*slot {
+func (svc *overlappingSlotFetcherSvc) fetchOverlappingSlots(_ context.Context, userASlots, userBSlots []*slot) []*slot {
 	if len(userASlots) <= 0 || len(userBSlots) <= 0 {
 		return nil
 	}
