@@ -25,7 +25,7 @@ func (uaRepo *userAvailabilityRepository) BulkCreate(ctx context.Context, db *go
 
 func (uaRepo *userAvailabilityRepository) GetByUserID(ctx context.Context, db *gorm.DB, userID string) ([]*models.UserAvailability, error) {
 	var availabilities []*models.UserAvailability
-	if err := db.WithContext(ctx).Where("user_id=?", userID).Order("day_of_week asc").Find(&availabilities).Error; err != nil {
+	if err := db.WithContext(ctx).Where("user_id=?", userID).Order("day_of_week, start_time asc").Find(&availabilities).Error; err != nil {
 		return nil, err
 	}
 

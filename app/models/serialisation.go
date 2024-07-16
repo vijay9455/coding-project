@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var DateFormat = "2006-01-02"
+
 type TimeOnly struct {
 	time.Time
 }
@@ -56,4 +58,36 @@ func (t *TimeOnly) UnmarshalJSON(b []byte) error {
 // MarshalJSON customizes the JSON marshalling for TimeOnly
 func (t TimeOnly) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, t.Format("15:04:05"))), nil
+}
+
+func (t TimeOnly) Before(u TimeOnly) bool {
+	return t.Time.Before(u.Time)
+}
+
+func (t TimeOnly) Add(d time.Duration) TimeOnly {
+	t.Time = t.Time.Add(d)
+	return t
+}
+
+type DateOnly struct {
+	time.Time
+}
+
+func (d *DateOnly) UnmarshalJSON(b []byte) error {
+	parsedDate, err := time.Parse(`"2006-01-02"`, string(b))
+	if err != nil {
+		return err
+	}
+	*d = DateOnly{parsedDate}
+	return nil
+}
+
+// MarshalJSON customizes the JSON marshalling for TimeOnly
+func (d DateOnly) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, d.Format("2006-01-02"))), nil
+}
+
+func (d DateOnly) Add(dur time.Duration) DateOnly {
+	d.Time = d.Time.Add(dur)
+	return d
 }

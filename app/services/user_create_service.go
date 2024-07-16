@@ -6,8 +6,6 @@ import (
 	"calendly/lib/db"
 	"context"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 var (
@@ -41,21 +39,7 @@ func NewUserService() UserCreateServiceInterface {
 
 func (svc *userCreateService) Create(ctx context.Context, params *UserCreateParams) (*models.User, error) {
 	user := svc.buildUserModel(params)
-	err := db.Get().Transaction(func(tx *gorm.DB) error {
-		if err := svc.userRepo.Create(ctx, tx, user); err != nil {
-			return err
-		}
-
-		availabilities := svc.buildDefaultAvailabilities(user)
-		if err := svc.uaRepo.BulkCreate(ctx, tx, availabilities); err != nil {
-			return err
-		}
-
-		user.Availabilities = availabilities
-		return nil
-	})
-
-	if err != nil {
+	if err := svc.userRepo.Create(ctx, db.Get(), user); err != nil {
 		return nil, err
 	}
 
@@ -67,10 +51,12 @@ func (svc *userCreateService) buildUserModel(params *UserCreateParams) *models.U
 		FirstName: *params.FirstName,
 		LastName:  *params.LastName,
 		Email:     *params.Email,
+
+		Availabilities: svc.buildDefaultAvailabilities(),
 	}
 }
 
-func (svc *userCreateService) buildDefaultAvailabilities(user *models.User) []*models.UserAvailability {
+func (svc *userCreateService) buildDefaultAvailabilities() []*models.UserAvailability {
 	// by default as part of creating user create availability for 9 AM - 5 PM on every week day
 	var availabilities []*models.UserAvailability
 	for _, dayOfWeek := range defaultDayOfWeeks {
@@ -78,7 +64,6 @@ func (svc *userCreateService) buildDefaultAvailabilities(user *models.User) []*m
 			StartTime: models.TimeOnly{Time: defaultStartTime},
 			EndTime:   models.TimeOnly{Time: defaultEndTime},
 			DayOfWeek: dayOfWeek,
-			UserID:    &user.ID,
 		})
 	}
 	return availabilities

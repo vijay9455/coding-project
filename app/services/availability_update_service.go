@@ -23,8 +23,8 @@ type AvailabilityUpdateParams struct {
 	DayOfWeek       int64 `json:"day_of_week" validate:"required,gte=1,lte=7"`
 	MarkUnAvailable *bool `json:"mark_unavailable" validate:"required"`
 	Availabilities  []*struct {
-		StartTime models.TimeOnly `json:"start_time" validate:"required"`
-		EndTime   models.TimeOnly `json:"end_time" validate:"required"`
+		StartTime *models.TimeOnly `json:"start_time" validate:"required"`
+		EndTime   *models.TimeOnly `json:"end_time" validate:"required"`
 	} `json:"availabilities"`
 }
 
@@ -60,8 +60,8 @@ func (svc *availabilityUpdateService) createAvailabilities(ctx context.Context, 
 	availabilities := make([]*models.UserAvailability, len(params.Availabilities))
 	for idx, availability := range params.Availabilities {
 		availabilities[idx] = &models.UserAvailability{
-			StartTime: availability.StartTime,
-			EndTime:   availability.EndTime,
+			StartTime: *availability.StartTime,
+			EndTime:   *availability.EndTime,
 			DayOfWeek: params.DayOfWeek,
 			UserID:    &userID,
 		}
