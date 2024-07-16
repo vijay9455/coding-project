@@ -116,10 +116,6 @@ func (svc *availableSlotFetcherSvc) buildAvailableSlots(_ context.Context, date 
 		availabilityStartTime := time.Date(date.Year(), date.Month(), date.Day(), a.StartTime.Hour(), a.StartTime.Minute(), 0, 0, time.UTC)
 		availabilityEndTime := time.Date(date.Year(), date.Month(), date.Day(), a.EndTime.Hour(), a.EndTime.Minute(), 0, 0, time.UTC)
 		for _, meeting := range meetings {
-			if meeting.StartTime.After(availabilityEndTime) {
-				continue
-			}
-
 			if availabilityStartTime.Before(meeting.StartTime) {
 				slotEndTime := min(availabilityEndTime, meeting.StartTime)
 				slots = append(slots, &slot{

@@ -6,7 +6,10 @@ import (
 	"time"
 )
 
-var DateFormat = "2006-01-02"
+var (
+	DateFormat     = "2006-01-02"
+	TimeOnlyFormat = "15:04:05"
+)
 
 type TimeOnly struct {
 	time.Time
@@ -22,14 +25,14 @@ func (t *TimeOnly) Scan(value interface{}) error {
 		*t = TimeOnly{v}
 		return nil
 	case []byte:
-		parsedTime, err := time.Parse("15:04:05", string(v))
+		parsedTime, err := time.Parse(TimeOnlyFormat, string(v))
 		if err != nil {
 			return err
 		}
 		*t = TimeOnly{parsedTime}
 		return nil
 	case string:
-		parsedTime, err := time.Parse("15:04:05", v)
+		parsedTime, err := time.Parse(TimeOnlyFormat, v)
 		if err != nil {
 			return err
 		}
@@ -42,12 +45,12 @@ func (t *TimeOnly) Scan(value interface{}) error {
 
 // Value implements the driver.Valuer interface for TimeOnly
 func (t TimeOnly) Value() (driver.Value, error) {
-	return t.Format("15:04:05"), nil
+	return t.Format(fmt.Sprintf(`"%s"`, TimeOnlyFormat)), nil
 }
 
 func (t *TimeOnly) UnmarshalJSON(b []byte) error {
 	str := string(b)
-	parsedTime, err := time.Parse(`"15:04:05"`, str)
+	parsedTime, err := time.Parse(TimeOnlyFormat, str)
 	if err != nil {
 		return err
 	}
@@ -57,11 +60,15 @@ func (t *TimeOnly) UnmarshalJSON(b []byte) error {
 
 // MarshalJSON customizes the JSON marshalling for TimeOnly
 func (t TimeOnly) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%s"`, t.Format("15:04:05"))), nil
+	return []byte(fmt.Sprintf(`"%s"`, t.Format(TimeOnlyFormat))), nil
 }
 
 func (t TimeOnly) Before(u TimeOnly) bool {
 	return t.Time.Before(u.Time)
+}
+
+func (t TimeOnly) After(u TimeOnly) bool {
+	return t.Time.After(u.Time)
 }
 
 func (t TimeOnly) Add(d time.Duration) TimeOnly {
@@ -74,7 +81,7 @@ type DateOnly struct {
 }
 
 func (d *DateOnly) UnmarshalJSON(b []byte) error {
-	parsedDate, err := time.Parse(`"2006-01-02"`, string(b))
+	parsedDate, err := time.Parse(fmt.Sprintf(`"%s"`, DateFormat), string(b))
 	if err != nil {
 		return err
 	}
@@ -84,7 +91,7 @@ func (d *DateOnly) UnmarshalJSON(b []byte) error {
 
 // MarshalJSON customizes the JSON marshalling for TimeOnly
 func (d DateOnly) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`"%s"`, d.Format("2006-01-02"))), nil
+	return []byte(fmt.Sprintf(`"%s"`, d.Format(DateFormat))), nil
 }
 
 func (d DateOnly) Add(dur time.Duration) DateOnly {
